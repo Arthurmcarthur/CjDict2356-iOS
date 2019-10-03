@@ -29,9 +29,17 @@
     //[textView setFont:[UIFont systemFontOfSize:16]];
     NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = 10;
-    NSDictionary* paragraphAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16], NSParagraphStyleAttributeName:paragraphStyle};
+    NSDictionary* paragraphAttributes = nil;
+    if (@available(iOS 13.0, *)) {
+        paragraphAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:[UIColor labelColor],  NSParagraphStyleAttributeName:paragraphStyle};
+    } else {
+        // Fallback on earlier versions
+        paragraphAttributes = @{NSFontAttributeName:[UIFont systemFontOfSize:16], NSParagraphStyleAttributeName:paragraphStyle};
+    }
     std::string manualStr = R"(    歡迎來到倉頡字典2356的世界。爲了讓您能够掌握該字典的使用與特性，我將在下方進行簡單的介紹。
     本倉頡字典支持直接搜索編碼的漢字，衹需在搜索框内輸入想查找的漢字或編碼并按下搜索鍵即可。
+    如果您想要同時查找多個漢字或是編碼，請以空格分隔它們。例如説，想要同時查找「米塞斯」三个字，您需要在搜索框内鍵入「米 塞 斯」（不含直角引號）。或者，您也可以以前導字符m|來實現查找。例如説，「m|米塞斯」（不含直角引號）可以與剛剛提到的「米 塞 斯」具有同樣的作用。
+    也許您會問，在同時查找多個字符或編碼時爲什麽要手動用空格將不同字符分隔開，或者使用前導字符m|呢？因爲，我們無法保證編碼對應的字符長度一定是1，即使現在所有編碼對應的字符長度都是1，隨着碼表更新，以後也不一定會是如此。出于這種考慮，我們讓用户手動分隔字符，或是在確信要查找的字符長度都爲1時，使用m|模式讓應用自動去分開這些字符。
     有時候，我們需要匹配符合某個條件的編碼。這時候，我們可以運用正則表達式對編碼進行匹配。首先，我介紹一些常用的正則符號。
     在正則表達式中，\w可以匹配到一個字母，或是一個數字，又或是一個下劃綫，又或者是一個漢字。例如说，通过L\w這個正則表達式可以匹配到Li。相同的，sk\w這個正則表達式可以匹配到skr。正則表達式ye.可以匹配到yes，yep，ye!等字符串。這是因爲在正則表達式中，.可以匹配一個任意字符。正則表達式00\d可以匹配到字符串007。這是因爲在正則表達式中，\d可以匹配一個數字。如果你不是使用像Python中的match方法從頭匹配的話，你會發現，la既能匹配到laundry，又能匹配到mainland中的la，這顯然是因爲這兩個字符串中都包含了la。那怎麽樣才能使用la去匹配laundry呢？仔細分析這兩個la會發現如下的不同，laundry中的la位于字符串的最前方，而mainland中的la位于字符串的中間部分。所以，我們就想，是不是存在那麽一個表達式，可以匹配到字符串的頭部位置呢？很幸運，我們的確有這麽一個表達式，它就是^。^并不匹配任何字符，它衹匹配一個位置，就是字符串起始的位置。所以我們衹需寫^la就匹配到了laundry中的la，而避免匹配到mainland中的la。同樣的，一般而言，我們使用se可以匹配到second中的se和Chinese中的se。怎樣纔能使se衹匹配到Chinese中的se？容易發現，Chinese中的se位于字符串的最後方，因此我們可以使用表達式se$。同樣，$不匹配任何字符，它只匹配字符串終結的位置。
     剛剛我們説，\w匹配到一個字母，或是一個數字，又或是一個下劃綫，又或是一個漢字。顯而易見，可以寫\w\w\w来匹配yes字符串。但是如果要匹配有10個字符的understand，難道要寫\w\w\w\w\w\w\w\w\w\w吗？爲了解决這個問題，我們可以簡单地寫\w{10}。{}中的10表示前方的那個表達式出現了10次。更强地，我們甚至可以寫\w{1,10}。{1,10}意味着前面的那個字符出現了1至10次。總之，{m}表示這前面的那個字符出現了m次，{n,m}表示這前面的那個字符出現了n至m次　請注意，{m}的範圍僅限于它前面的那个字符，例如説，l\w{5}表示的是l後面跟着五個漢字/字母/下劃綫/數字，而不是説，一個l後面跟着一個漢字/字母/下劃綫/數字的序列出現了五次。

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		9F135FF322EC506600AAF60B /* HanaMinA.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F135FF122EC503B00AAF60B /* HanaMinA.ttf */; };
 		9F135FF422EC506600AAF60B /* HanaMinB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F135FF222EC503B00AAF60B /* HanaMinB.ttf */; };
+		9F2206F12333A02D00672C53 /* CharIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2206F02333A02D00672C53 /* CharIterator.swift */; };
+		9F2206F4233630C000672C53 /* UIFont+UIFontCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F2206F3233630BF00672C53 /* UIFont+UIFontCategory.m */; };
 		9FCA295B22DF64C900DDAEC5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FCA295A22DF64C900DDAEC5 /* AppDelegate.m */; };
 		9FCA295E22DF64C900DDAEC5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FCA295D22DF64C900DDAEC5 /* ViewController.m */; };
 		9FCA296122DF64C900DDAEC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FCA295F22DF64C900DDAEC5 /* Main.storyboard */; };
@@ -48,6 +50,10 @@
 /* Begin PBXFileReference section */
 		9F135FF122EC503B00AAF60B /* HanaMinA.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HanaMinA.ttf; sourceTree = "<group>"; };
 		9F135FF222EC503B00AAF60B /* HanaMinB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HanaMinB.ttf; sourceTree = "<group>"; };
+		9F2206EF2333A02D00672C53 /* 倉頡字典2356-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "倉頡字典2356-Bridging-Header.h"; sourceTree = "<group>"; };
+		9F2206F02333A02D00672C53 /* CharIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharIterator.swift; sourceTree = "<group>"; };
+		9F2206F2233630BF00672C53 /* UIFont+UIFontCategory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIFont+UIFontCategory.h"; sourceTree = "<group>"; };
+		9F2206F3233630BF00672C53 /* UIFont+UIFontCategory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIFont+UIFontCategory.m"; sourceTree = "<group>"; };
 		9FCA295622DF64C900DDAEC5 /* 倉頡字典2356.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "倉頡字典2356.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FCA295922DF64C900DDAEC5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9FCA295A22DF64C900DDAEC5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -157,6 +163,10 @@
 				9FCA29A922E5DD2500DDAEC5 /* UserManualViewController.mm */,
 				9FDF208B22FDBC0E0022CFD5 /* CJTableViewCell.h */,
 				9FDF208C22FDBC0E0022CFD5 /* CJTableViewCell.m */,
+				9F2206F02333A02D00672C53 /* CharIterator.swift */,
+				9F2206EF2333A02D00672C53 /* 倉頡字典2356-Bridging-Header.h */,
+				9F2206F2233630BF00672C53 /* UIFont+UIFontCategory.h */,
+				9F2206F3233630BF00672C53 /* UIFont+UIFontCategory.m */,
 			);
 			path = "倉頡字典2356";
 			sourceTree = "<group>";
@@ -241,11 +251,12 @@
 		9FCA294E22DF64C800DDAEC5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = Qwetional;
 				TargetAttributes = {
 					9FCA295522DF64C800DDAEC5 = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1030;
 					};
 					9FCA296D22DF64CA00DDAEC5 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -314,11 +325,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				9FCA299222DF653500DDAEC5 /* CodeChartsHandler.m in Sources */,
+				9F2206F4233630C000672C53 /* UIFont+UIFontCategory.m in Sources */,
 				9FCA29A522E57AD000DDAEC5 /* BullshitViewController.m in Sources */,
 				9FCA295E22DF64C900DDAEC5 /* ViewController.m in Sources */,
 				9FCA299322DF653500DDAEC5 /* AboutPageViewController.m in Sources */,
 				9FDF208D22FDBC0E0022CFD5 /* CJTableViewCell.m in Sources */,
 				9FCA296922DF64CA00DDAEC5 /* main.m in Sources */,
+				9F2206F12333A02D00672C53 /* CharIterator.swift in Sources */,
 				9FCA295B22DF64C900DDAEC5 /* AppDelegate.m in Sources */,
 				9FCA299822E55B6D00DDAEC5 /* AuthorInfoPageViewController.m in Sources */,
 				9FCA29AA22E5DD2500DDAEC5 /* UserManualViewController.mm in Sources */,
@@ -428,11 +441,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -481,10 +495,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -493,7 +509,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20191001.7;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MWPM7Y2V26;
 				INFOPLIST_FILE = "倉頡字典2356/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -503,6 +522,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jhy.cjdict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "倉頡字典2356/倉頡字典2356-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -511,7 +533,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20191001.7;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MWPM7Y2V26;
 				INFOPLIST_FILE = "倉頡字典2356/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -521,6 +546,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jhy.cjdict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "倉頡字典2356/倉頡字典2356-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -528,6 +555,7 @@
 		9FCA298622DF64CA00DDAEC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "倉頡字典2356Tests/Info.plist";
@@ -546,6 +574,7 @@
 		9FCA298722DF64CA00DDAEC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "倉頡字典2356Tests/Info.plist";
@@ -564,6 +593,7 @@
 		9FCA298922DF64CA00DDAEC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "倉頡字典2356UITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -581,6 +611,7 @@
 		9FCA298A22DF64CA00DDAEC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "倉頡字典2356UITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 - (NSMutableArray*)getRecordFrom:(NSString*)listName byRegularExpressionWithPattern:(NSString*)pattern;
 - (NSMutableArray*)getRecordFrom:(NSString*)listName byGivenCharacter:(NSString*)givenCharacter;
+- (NSMutableArray*)getRecordFrom:(NSString*)listName byGivenCharacterArray:(NSArray <NSString*>*)givenCharacterArray;
 - (NSMutableArray*)getRecordFromKanjiColomnOf:(NSString*)listName byGivenCharacter:(NSString*)givenCharacter;
 - (NSMutableArray*)getRecordFromIDSListAndCjCodeChart:(NSString*)codeChart byGivenComponents:(NSString*)givenComponents;
 + (instancetype)codeChartsHandler;

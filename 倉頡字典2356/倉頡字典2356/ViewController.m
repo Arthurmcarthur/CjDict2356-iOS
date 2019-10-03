@@ -10,13 +10,15 @@
 #import "CodeChartsHandler.h"
 #import "AboutPageViewController.h"
 #import "CJTableViewCell.h"
+#import "倉頡字典2356-Swift.h"
+#import "UIFont+UIFontCategory.h"
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 @property(nonatomic, weak)UITableView* tableView;       // UITableView
 @property(nonatomic, weak)UISearchBar* searchBar;       // 搜索欄
 @property(nonatomic, weak)UIButton* infoButton;         // 关于按钮，即是左上角那个按钮
 @property(nonatomic, strong)CodeChartsHandler* chartsHandler;       // 指向碼表處理器的指針
-// @property(nonatomic, strong)UIFont* dictFont;                       // 黙認字体
+@property(nonatomic, strong)UIFont* characterLabelFont;                       // 黙認字体
 @property(nonatomic, strong)NSDictionary* dictionaryWhenNoResult;   // 字典，用于存放没有結果時的情况。
 @property(nonatomic, strong)NSArray* cj3Arr;                        // 数組，用於存放査詢結果
 @property(nonatomic, strong)NSArray* cj5Arr;
@@ -41,7 +43,13 @@
     [infoButton addTarget:self action:@selector(infoButtonClick) forControlEvents:UIControlEventTouchUpInside];
     self.infoButton = infoButton;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.infoButton];
-    [[[self navigationController] navigationBar] setBarTintColor:[UIColor whiteColor]];
+    
+    if (@available(iOS 13.0, *)) {          // 適配iOS 13夜間模式
+        [[[self navigationController] navigationBar] setBarTintColor:[UIColor systemBackgroundColor]];
+    } else {
+        // Fallback on earlier versions
+        [[[self navigationController] navigationBar] setBarTintColor:[UIColor whiteColor]];
+    }
     
     #pragma mark - 碼表處理器
     // 實例化碼表處理器并賦值
@@ -64,13 +72,16 @@
     UISearchBar* searchBar = [[UISearchBar alloc] init];
     [self setSearchBar:searchBar];
     [[self searchBar] setDelegate:self];
+    UIFont* searchTextFont = [UIFont addHanaMinBFallbacktoFont:[UIFont fontWithName:@"HanaMinA" size:17] atHanaminFontSizeOf:17.0];
+    [[[self searchBar] searchTextField] setFont:searchTextFont];
     [[self searchBar] setPlaceholder:@"請輸入査詢字符"];
     [[self view] addSubview:[self searchBar]];
     
-    // #pragma mark - P2字体初始化
-    // 初始化P2字体
-    // UIFont* dictFont = [UIFont fontWithName:@"HanaMinA" size:17];
-    // self.dictFont = dictFont;
+     #pragma mark - P2字体初始化
+     // 初始化P2字体
+    // UIFont* kanjiLabelDictFont = [UIFont fontWithName:@"HanaMinA" size:17];
+    UIFont* characterLabelFont = [UIFont addHanaMinBFallbacktoFont:[UIFont fontWithName:@"HanaMinA" size:40] atHanaminFontSizeOf:40.0];
+    self.characterLabelFont = characterLabelFont;
 
     #pragma mark - 没有結果時的字典初始化
     // 没有結果時的字典初始化
@@ -138,8 +149,9 @@
     }
 
     
-    cell.characterLabel.font = [UIFont fontWithName:@"HanaMinA" size:40];
+    // cell.characterLabel.font = [UIFont fontWithName:@"HanaMinA" size:40];
     // cell.characterUnicodeInfoLabel.font = [UIFont fontWithName:@"HanaMinA" size:10];
+    cell.characterLabel.font = self.characterLabelFont;
     cell.cjcodeLabel.font = [UIFont fontWithName:@"HanaMinA" size:21];
     // cell.characterUnicodeInfoLabel.textColor = [UIColor grayColor];
     return cell;
@@ -194,7 +206,7 @@
     return @[@"三", @"五", @"六", @"微", @"雅", @"二"];
 }
 
-#pragma mark - 複製按鈕
+#pragma mark - 複製與更多選項按鈕
 // 右滑得複製按鈕與更多選項按鈕
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
     if([((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).characterLabel.text isEqualToString:@"(空)"] || [((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).characterLabel.text isEqualToString:@""]){
@@ -222,13 +234,13 @@
                 pasteboard.string = ((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).cjcodeLabel.text;
             }]];
             
-            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"繼續查找此字符" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"繼續査找此字符" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 [self normalModeWithString:((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).characterLabel.text];
                 [[self tableView] reloadData];
                 [self.view endEditing:YES];
             }]];
             
-            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"繼續查找此倉頡碼" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"繼續査找此倉頡碼" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 NSString* targetCjcode = nil;
                 @try {
                     targetCjcode = [[((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).cjcodeLabel.text componentsSeparatedByString:@"("][1] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@")"]];
@@ -240,6 +252,15 @@
                     [self.view endEditing:YES];
                 }
             }]];
+            
+            /*
+            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"査找以該字符爲部件的漢字" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                self.searchBar.text = [NSString stringWithFormat:@"i|%@", ((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).characterLabel.text];
+                [self idsModeWithPattern:((CJTableViewCell*)[[self tableView] cellForRowAtIndexPath:indexPath]).characterLabel.text];
+                [[self tableView] reloadData];
+                [self.view endEditing:YES];
+            }]];
+             */
             
             [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"複製Unicode編碼" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
@@ -289,17 +310,50 @@
     NSRegularExpression* regexModePattern = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"^r\\|(.+)$"] options:0 error:nil];
     NSTextCheckingResult* regexModeMatch = [regexModePattern firstMatchInString:self.searchBar.text options:0 range:NSMakeRange(0, self.searchBar.text.length)];
     
+    BOOL clearCommandMatch = [self.searchBar.text isEqualToString:@"//clear"];
+    
     NSRegularExpression* idsModePattern = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"^i\\|(.+)$"] options:0 error:nil];
     NSTextCheckingResult* idsModeMatch = [idsModePattern firstMatchInString:self.searchBar.text options:0 range:NSMakeRange(0, self.searchBar.text.length)];
+    
+    NSRegularExpression* multiCharacterModePattern = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"^m\\|(.+)$"] options:0 error:nil];
+    NSTextCheckingResult* multiCharacterModeMatch = [multiCharacterModePattern firstMatchInString:self.searchBar.text options:0 range:NSMakeRange(0, self.searchBar.text.length)];
     
     if(regexModeMatch){
         // NSLog(@"%@", [self.searchBar.text substringWithRange:[regexModeMatch rangeAtIndex:1]]);
         [self regexModeWithRegexPattern:[self.searchBar.text substringWithRange:[regexModeMatch rangeAtIndex:1]]];
-    }else if(idsModeMatch){
+    } else if (idsModeMatch) {
         // NSLog(@"%@", [self.searchBar.text substringWithRange:[idsModeMatch rangeAtIndex:1]]);
         [self idsModeWithPattern:[self.searchBar.text substringWithRange:[idsModeMatch rangeAtIndex:1]]];
-    }else{
+    } else if (multiCharacterModeMatch) {
+        // NSLog(@"%@", [self.searchBar.text substringWithRange:[idsModeMatch rangeAtIndex:1]]);
+        [self arrayNormalModeWithArray:[CharIterator charIteratorWithTargetString:[self.searchBar.text substringWithRange:[multiCharacterModeMatch rangeAtIndex:1]]]];
+        
+    } else if (clearCommandMatch) {
+        // NSLog(@"%@", [self.searchBar.text substringWithRange:[idsModeMatch rangeAtIndex:1]]);
+        NSString* documentDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString* documentDbPath = [documentDirectory stringByAppendingPathComponent:@"cjdictdb.db"];
+        NSString* versionPlist = [documentDirectory stringByAppendingPathComponent:@"versionplist.plist"];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:versionPlist]) {
+            [fileManager removeItemAtPath:versionPlist error:nil];
+        }
+        if ([fileManager fileExistsAtPath:documentDbPath]) {
+            [fileManager removeItemAtPath:documentDbPath error:nil];
+        }
+        UIAlertController* clearCommandAlert = [UIAlertController alertControllerWithTitle:@"提示" message:@"數据清除完畢，請重新啓動應用。" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* okAlert = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            
+        }];
+        [clearCommandAlert addAction:okAlert];
+        [self presentViewController:clearCommandAlert animated:YES completion:nil];
         [self normalMode];
+        
+    } else {
+        if ([self.searchBar.text containsString:@" "]) {
+            [self arrayNormalMode];
+        } else {
+            [self normalMode];
+        }
     }
 
     [[self tableView] reloadData];
@@ -371,6 +425,45 @@
     
     [self isResultArrCollectionEmpty:resultArrCollection];
     
+}
+
+- (void)arrayNormalMode{
+    NSArray<NSString*>* targetArray = [self.searchBar.text.lowercaseString componentsSeparatedByString:@" "];
+    
+    NSArray* resultArr1 = [[self chartsHandler] getRecordFrom:@"CJ3" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr2 = [[self chartsHandler] getRecordFrom:@"CJ5" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr3 = [[self chartsHandler] getRecordFrom:@"CJ6" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr4 = [[self chartsHandler] getRecordFrom:@"MSCJ" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr5 = [[self chartsHandler] getRecordFrom:@"YHCJ" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr6 = [[self chartsHandler] getRecordFrom:@"CJ2" byGivenCharacterArray:targetArray];
+    
+    NSArray<NSArray*>* resultArrCollection = @[resultArr1, resultArr2, resultArr3, resultArr4, resultArr5, resultArr6];
+    
+    [self isResultArrCollectionEmpty:resultArrCollection];
+    
+}
+
+- (void)arrayNormalModeWithArray:(NSMutableArray<NSString*>*)targetArray{
+    NSArray* resultArr1 = [[self chartsHandler] getRecordFrom:@"CJ3" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr2 = [[self chartsHandler] getRecordFrom:@"CJ5" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr3 = [[self chartsHandler] getRecordFrom:@"CJ6" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr4 = [[self chartsHandler] getRecordFrom:@"MSCJ" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr5 = [[self chartsHandler] getRecordFrom:@"YHCJ" byGivenCharacterArray:targetArray];
+    
+    NSArray* resultArr6 = [[self chartsHandler] getRecordFrom:@"CJ2" byGivenCharacterArray:targetArray];
+    
+    NSArray<NSArray*>* resultArrCollection = @[resultArr1, resultArr2, resultArr3, resultArr4, resultArr5, resultArr6];
+    
+    [self isResultArrCollectionEmpty:resultArrCollection];
 }
 
 - (void)normalModeWithString:(NSString*)targetString{
