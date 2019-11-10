@@ -262,7 +262,7 @@
             }]];
              */
             
-            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"複製Unicode編碼" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [moreOptionsAlert addAction:[UIAlertAction actionWithTitle:@"複製UCS碼位" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
                 NSString* rawUnicodeInfoText = nil;
                 NSString* targetUnicodeInfoText = nil;
@@ -318,6 +318,9 @@
     NSRegularExpression* multiCharacterModePattern = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"^m\\|(.+)$"] options:0 error:nil];
     NSTextCheckingResult* multiCharacterModeMatch = [multiCharacterModePattern firstMatchInString:self.searchBar.text options:0 range:NSMakeRange(0, self.searchBar.text.length)];
     
+    NSRegularExpression* idsQueryCommandPattern = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"^//ids\\|(.+)$"] options:0 error:nil];
+    NSTextCheckingResult* idsQueryCommandPatternMatch = [idsQueryCommandPattern firstMatchInString:self.searchBar.text options:0 range:NSMakeRange(0, self.searchBar.text.length)];
+    
     if(regexModeMatch){
         // NSLog(@"%@", [self.searchBar.text substringWithRange:[regexModeMatch rangeAtIndex:1]]);
         [self regexModeWithRegexPattern:[self.searchBar.text substringWithRange:[regexModeMatch rangeAtIndex:1]]];
@@ -348,18 +351,34 @@
         [self presentViewController:clearCommandAlert animated:YES completion:nil];
         [self normalMode];
         
-    } else {
-        if ([self.searchBar.text containsString:@" "]) {
-            [self arrayNormalMode];
-        } else {
-            [self normalMode];
+    } else if (idsQueryCommandPatternMatch) {       // 用命令查詢IDS
+        NSString* resultString = nil;
+        resultString = [[self chartsHandler] getRecordFromIDSListByGivenCharacter:[self.searchBar.text substringWithRange:[idsQueryCommandPatternMatch rangeAtIndex:1]]];
+        NSMutableAttributedString* resultAttributedString = nil;
+        if (resultString != nil) {
+            resultAttributedString = [[NSMutableAttributedString alloc] initWithString:resultString];
+            [resultAttributedString addAttribute:NSFontAttributeName value:[UIFont addHanaMinBFallbacktoFont:[UIFont fontWithName:@"HanaMinA" size:14.0] atHanaminFontSizeOf:14.0] range:NSMakeRange(0, resultString.length)];
+            UIAlertController* idsQueryAlert = [UIAlertController alertControllerWithTitle:@"IDS提示" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+            [idsQueryAlert setValue:resultAttributedString forKey:@"attributedMessage"];
+            UIAlertAction* okAlert = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                
+            }];
+            [idsQueryAlert addAction:okAlert];
+            [self presentViewController:idsQueryAlert animated:YES completion:nil];
         }
-    }
+        
+    } else {
+            if ([self.searchBar.text containsString:@" "]) {
+                [self arrayNormalMode];
+            } else {
+                [self normalMode];
+            }
+        }
 
-    [[self tableView] reloadData];
-    [self.view endEditing:YES];
-    
-}
+        [[self tableView] reloadData];
+        [self.view endEditing:YES];
+        
+    }
 
 #pragma mark - 信息鍵
 // 按下信息鍵後做什麽
@@ -485,6 +504,7 @@
     
     [self isResultArrCollectionEmpty:resultArrCollection];
 }
+
 
 #pragma mark - 檢驗結果是否爲空
 // 抽出來的方法，用于檢驗有没有結果爲空的表。 然後把它們裝在self.allArr裏。

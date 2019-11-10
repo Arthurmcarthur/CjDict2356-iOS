@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableArray*)getRecordFrom:(NSString*)listName byGivenCharacterArray:(NSArray <NSString*>*)givenCharacterArray;
 - (NSMutableArray*)getRecordFromKanjiColomnOf:(NSString*)listName byGivenCharacter:(NSString*)givenCharacter;
 - (NSMutableArray*)getRecordFromIDSListAndCjCodeChart:(NSString*)codeChart byGivenComponents:(NSString*)givenComponents;
+- (NSString*)getRecordFromIDSListByGivenCharacter:(NSString*)givenCharacter;
 + (instancetype)codeChartsHandler;
 @end
 

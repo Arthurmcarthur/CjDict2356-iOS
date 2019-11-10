@@ -98,6 +98,7 @@
 
 - (NSMutableArray*)getRecordFrom:(NSString*)listName byGivenCharacterArray:(NSArray <NSString*>*)givenCharacterArray{
     [self.dbManager doQuery:@"CREATE TABLE TargetCharactersTable ( \
+     TEMP_NUMBER INT NOT NULL, \
      TARGETCHARACTERS TEXT NOT NULL \
      )"];
     NSMutableArray* givenCharacterArrayWithoutRepetition = [[NSMutableArray alloc] init];
@@ -107,12 +108,16 @@
         }
     }
     givenCharacterArray = nil;
+    int tempCharacterCounter = 1;
     for (NSString* givenCharacter in givenCharacterArrayWithoutRepetition) {
         //[self.dbManager doQuery:[NSString stringWithFormat:@"insert into TargetCharactersTable(TARGETCHARACTERS) values('%@')", givenCharacter]];
-        [self.dbManager doQuery:[NSString stringWithFormat:@"INSERT INTO TargetCharactersTable (TARGETCHARACTERS) VALUES ('%@')", givenCharacter]];
+        [self.dbManager doQuery:[NSString stringWithFormat:@"INSERT INTO TargetCharactersTable (TEMP_NUMBER, TARGETCHARACTERS) VALUES ('%d', '%@')", tempCharacterCounter, givenCharacter]];
+        ++tempCharacterCounter;
     }
     // NSMutableArray* resultArr = [NSMutableArray arrayWithArray:[self.dbManager getRowsForQuery:[NSString stringWithFormat:@"SELECT * FROM TargetCharactersTable JOIN %@ ON TargetCharactersTable.TARGETCHARACTERS = %@.KANJI OR TargetCharactersTable.TARGETCHARACTERS = %@.CJCODE", listName, listName, listName]]];
-    NSMutableArray* resultArr = [NSMutableArray arrayWithArray:[self.dbManager getRowsForQuery:[NSString stringWithFormat:@"With temp(SERIAL_NUMBER) AS (SELECT DISTINCT SERIAL_NUMBER FROM TargetCharactersTable JOIN %@ ON TargetCharactersTable.TARGETCHARACTERS = %@.KANJI OR TargetCharactersTable.TARGETCHARACTERS = %@.CJCODE) SELECT * FROM %@ A INNER JOIN temp B ON A.SERIAL_NUMBER = B.SERIAL_NUMBER", listName, listName, listName, listName]]];
+    // NSMutableArray* resultArr = [NSMutableArray arrayWithArray:[self.dbManager getRowsForQuery:[NSString stringWithFormat:@"With temp(TEMP_NUMBER, SERIAL_NUMBER, T_SERIAL_NUMBER) AS (SELECT TEMP_NUMBER, SERIAL_NUMBER, count(DISTINCT SERIAL_NUMBER) FROM TargetCharactersTable JOIN %@ ON TargetCharactersTable.TARGETCHARACTERS = %@.KANJI OR TargetCharactersTable.TARGETCHARACTERS = %@.CJCODE GROUP BY SERIAL_NUMBER) SELECT * FROM %@ A INNER JOIN temp B ON A.SERIAL_NUMBER = B.SERIAL_NUMBER ORDER BY B.TEMP_NUMBER", listName, listName, listName, listName]]];
+    NSMutableArray* resultArr = [NSMutableArray arrayWithArray:[self.dbManager getRowsForQuery:[NSString stringWithFormat:@"SELECT *, count(DISTINCT SERIAL_NUMBER) FROM TargetCharactersTable JOIN %@ ON TargetCharactersTable.TARGETCHARACTERS = %@.KANJI OR TargetCharactersTable.TARGETCHARACTERS = %@.CJCODE GROUP BY SERIAL_NUMBER ORDER BY TEMP_NUMBER", listName, listName, listName]]];
+    
     [self.dbManager doQuery:@"DROP TABLE TargetCharactersTable"];
     return resultArr;
 }
@@ -129,6 +134,22 @@
     
     return resultArr;
 }
+
+- (NSString *)getRecordFromIDSListByGivenCharacter:(NSString *)givenCharacter {
+    NSMutableArray* tempArr = nil;
+    tempArr = [NSMutableArray arrayWithArray:[self.dbManager getRowsForQuery:[NSString stringWithFormat:@"SELECT IDS FROM IDS WHERE KANJI = '%@'", givenCharacter]]];
+    NSLog(@"%@", tempArr);
+    NSString* resultString = nil;
+    
+    @try {
+        resultString = tempArr[0][@"IDS"];
+    } @catch (NSException *exception) {
+        resultString = nil;
+    } @finally {
+        return resultString;
+    }
+}
+
 + (instancetype)codeChartsHandler{
     return [[CodeChartsHandler alloc] init];
 }

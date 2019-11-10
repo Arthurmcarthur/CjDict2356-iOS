@@ -511,7 +511,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20191001.7;
+				CURRENT_PROJECT_VERSION = 20191101.4;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MWPM7Y2V26;
 				INFOPLIST_FILE = "倉頡字典2356/Info.plist";
@@ -520,6 +520,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.4.20191101;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jhy.cjdict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "倉頡字典2356/倉頡字典2356-Bridging-Header.h";
@@ -535,7 +536,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20191001.7;
+				CURRENT_PROJECT_VERSION = 20191101.4;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MWPM7Y2V26;
 				INFOPLIST_FILE = "倉頡字典2356/Info.plist";
@@ -544,6 +545,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.4.20191101;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jhy.cjdict;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "倉頡字典2356/倉頡字典2356-Bridging-Header.h";
